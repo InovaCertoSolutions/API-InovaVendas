@@ -80,9 +80,9 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Arquivo não encontrado");
         }
 
-        var model = search.get();
-        model.setName(request.getName());
-        model.setUrl(request.getUrl());
+        var model = new FileModel();
+        BeanUtils.copyProperties(request, model);
+        model.setUuid(id);
         model.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         return ResponseEntity.status(HttpStatus.OK).body(this.service.save(model));
     }
