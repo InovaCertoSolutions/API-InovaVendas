@@ -1,5 +1,9 @@
 package com.inovacerto.apiinovavendas.services;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import com.inovacerto.apiinovavendas.models.FileModel;
@@ -23,12 +27,25 @@ public class FileService {
         return repository.save(model);
     }
 
-    public Object validar(@Valid FileRequest request) {
+    public Object validateStore(@Valid FileRequest request) {
         if (repository.existsByUrl(request.getUrl())) {
-            return "URL já cadastrada";
+            return "URL já cadastrada!";
         }
 
         return true;
+    }
+
+    public List<FileModel> search() {
+        return repository.findAll();
+    }
+
+    public Optional<FileModel> findById(UUID id) {
+        return repository.findById(id);
+    }
+
+    @Transactional
+    public void delete(FileModel model) {
+        repository.delete(model);
     }
 
 }
