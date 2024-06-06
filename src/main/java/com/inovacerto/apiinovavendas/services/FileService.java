@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.inovacerto.apiinovavendas.models.FileModel;
@@ -35,8 +37,8 @@ public class FileService {
         return true;
     }
 
-    public List<FileModel> search() {
-        return repository.findAll();
+    public Page<FileModel> search(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
     public Optional<FileModel> findById(UUID id) {
