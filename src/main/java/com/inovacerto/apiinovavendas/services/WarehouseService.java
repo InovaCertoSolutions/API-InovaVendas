@@ -7,45 +7,45 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.inovacerto.apiinovavendas.models.ProductModel;
-import com.inovacerto.apiinovavendas.requests.ProductRequest;
-import com.inovacerto.apiinovavendas.respositories.ProductRepository;
+import com.inovacerto.apiinovavendas.models.WarehouseModel;
+import com.inovacerto.apiinovavendas.requests.WarehouseRequest;
+import com.inovacerto.apiinovavendas.respositories.WarehouseRepository;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @Service
-public class ProductService {
+public class WarehouseService {
 
-    final ProductRepository repository;
+    final WarehouseRepository repository;
 
-    public ProductService(ProductRepository repository) {
+    public WarehouseService(WarehouseRepository repository) {
         this.repository = repository;
     }
 
     @Transactional
-    public Object save(ProductModel model) {
+    public Object save(WarehouseModel model) {
         return repository.save(model);
     }
 
-    public Object validateStore(@Valid ProductRequest request) {
+    public Object validateStore(@Valid WarehouseRequest request) {
         if (repository.existsByName(request.getName())) {
-            return "Produto já cadastrada!";
+            return "Armazém já cadastrada!";
         }
 
         return true;
     }
 
-    public Page<ProductModel> search(Pageable pageable) {
+    public Page<WarehouseModel> search(Pageable pageable) {
         return repository.findAll(pageable);
     }
 
-    public Optional<ProductModel> findById(UUID id) {
+    public Optional<WarehouseModel> findById(UUID id) {
         return repository.findById(id);
     }
 
     @Transactional
-    public void delete(ProductModel model) {
+    public void delete(WarehouseModel model) {
         repository.delete(model);
     }
 
