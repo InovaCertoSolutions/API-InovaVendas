@@ -10,4 +10,6 @@ import com.inovacerto.apiinovavendas.models.FileModel;
 @Repository
 public interface FileRepository extends JpaRepository<FileModel, UUID> {
 
+    boolean existsByUrl(String url);
+
 }
