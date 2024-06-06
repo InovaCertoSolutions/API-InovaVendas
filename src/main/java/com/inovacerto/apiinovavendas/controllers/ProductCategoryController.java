@@ -22,45 +22,45 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inovacerto.apiinovavendas.models.FileModel;
-import com.inovacerto.apiinovavendas.requests.FileRequest;
-import com.inovacerto.apiinovavendas.services.FileService;
+import com.inovacerto.apiinovavendas.models.ProductCategoryModel;
+import com.inovacerto.apiinovavendas.requests.ProductCategoryRequest;
+import com.inovacerto.apiinovavendas.services.ProductCategoryService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping("/files")
-public class FileController {
+@RequestMapping("/product_categories")
+public class ProductCategoryController {
 
-    final FileService service;
+    final ProductCategoryService service;
 
-    public FileController(FileService service) {
+    public ProductCategoryController(ProductCategoryService service) {
         this.service = service;
     }
 
     @GetMapping
-    public ResponseEntity<Page<FileModel>> search (@PageableDefault(page = 0, size = 10, sort = "uuid", direction = Sort.Direction.ASC) Pageable pageable) {
+    public ResponseEntity<Page<ProductCategoryModel>> search (@PageableDefault(page = 0, size = 10, sort = "uuid", direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.service.search(pageable));
     }
 
     @GetMapping("/{uuid}")
     public ResponseEntity<Object> searchById (@PathVariable(value = "uuid") UUID id) {
-        Optional<FileModel> search = this.service.findById(id);
+        Optional<ProductCategoryModel> search = this.service.findById(id);
         if (!search.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Arquivo não encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Categoria não encontrada");
         }
         return ResponseEntity.status(HttpStatus.OK).body(search.get());
     }
 
     @PostMapping
-    public ResponseEntity<Object> store(@RequestBody @Valid FileRequest request) {
+    public ResponseEntity<Object> store(@RequestBody @Valid ProductCategoryRequest request) {
         var validation = this.service.validateStore(request);
         if (validation instanceof String) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(validation);
         }
         
-        var model = new FileModel();
+        var model = new ProductCategoryModel();
         BeanUtils.copyProperties(request, model);
         model.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         return ResponseEntity.status(HttpStatus.CREATED).body(this.service.save(model));
@@ -68,24 +68,23 @@ public class FileController {
 
     @DeleteMapping("/{uuid}")
     public ResponseEntity<Object> remove(@PathVariable(value = "uuid") UUID id) {
-        Optional<FileModel> search = this.service.findById(id);
+        Optional<ProductCategoryModel> search = this.service.findById(id);
         if (!search.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Arquivo não encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Categoria não encontrada");
         }
         service.delete(search.get());
         return ResponseEntity.status(HttpStatus.OK).body("Removido com sucesso!");
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<Object> update(@PathVariable(value = "uuid") UUID id, @RequestBody @Valid FileRequest request) {
-        Optional<FileModel> search = this.service.findById(id);
+    public ResponseEntity<Object> update(@PathVariable(value = "uuid") UUID id, @RequestBody @Valid ProductCategoryRequest request) {
+        Optional<ProductCategoryModel> search = this.service.findById(id);
         if (!search.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Arquivo não encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Categoria não encontrada");
         }
 
         var model = search.get();
         model.setName(request.getName());
-        model.setUrl(request.getUrl());
         model.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         
         return ResponseEntity.status(HttpStatus.OK).body(this.service.save(model));

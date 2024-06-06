@@ -1,6 +1,5 @@
 package com.inovacerto.apiinovavendas.services;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
