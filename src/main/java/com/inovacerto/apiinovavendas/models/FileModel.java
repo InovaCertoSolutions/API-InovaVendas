@@ -1,6 +1,7 @@
 package com.inovacerto.apiinovavendas.models;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -28,5 +29,11 @@ public class FileModel implements Serializable {
 
     @Column(length = 500, nullable = false)
     private String url;
+
+    @Column(nullable=false)
+    private LocalDateTime creationDate;
+
+    @Column(nullable=true)
+    private LocalDateTime lastUpdateDate;
 
 }
