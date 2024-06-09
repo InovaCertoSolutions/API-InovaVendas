@@ -34,37 +34,39 @@ public class InventoryManagementService {
     }
 
     @Transactional
-    public InventoryManagementModel movimentarEstoque(InventoryManagementRequest movimentacao) {
+    public InventoryManagementModel movimentarEstoque(InventoryManagementRequest request) {
         
         InventoryManagementModel model = new InventoryManagementModel();
 
-        ProductModel product = this.productRepository.findById(movimentacao.getProduct()).get();
+        ProductModel product = this.productRepository.findById(request.getProduct()).get();
         model.setProduct(product);
 
-        WarehouseModel warehouse = this.warehouseRepository.findById(movimentacao.getWarehouse()).get();
+        WarehouseModel warehouse = this.warehouseRepository.findById(request.getWarehouse()).get();
         model.setWarehouse(warehouse);
 
-        // TODO: PRECISA SETAR:
-        // managementType
-        // quantity
-        // unitCost
-        // creationDate
+        var type = request.getManagementType();
 
-        var newStockQuantity = product.getStockQuantity();
-        var type = movimentacao.getManagementType();
+        model.setManagementType(type);
+        model.setQuantity(request.getQuantity());
+        model.setUnitCost(request.getUnitCost());
         
-
+        Integer newStockQuantity = 0;
         if (type.equals("ENTRADA")) {
-            newStockQuantity += quantity;
-        } else if (type.equals("SAIDA") || type.equals("VENDA")) {
-            newStockQuantity -= quantity;
+            product.setMediumCost((product.getCost() + request.getUnitCost()) / 2);
+            if (product.getStockQuantity() == null) {
+                newStockQuantity = request.getQuantity();
+            } else {
+                newStockQuantity = request.getQuantity() + product.getStockQuantity();
+            }
+        } else {
+            newStockQuantity = product.getStockQuantity() - request.getQuantity();
         }
 
         product.setStockQuantity(newStockQuantity);
         product.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         this.productRepository.save(product);
 
-        return movimentacao;
+        return model;
     }
 
     @Transactional
@@ -78,6 +80,10 @@ public class InventoryManagementService {
         var type = request.getManagementType();
         if (!type.equals("ENTRADA")) {
             ProductModel product = this.productRepository.findById(request.getProduct()).get();
+            if (product.getStockQuantity() == null) {
+                return "Nao ha estoque nesse produto";
+            }
+
             if (request.getQuantity() > product.getStockQuantity()) {
                 return "Não há quantidade suficiente em estoque";
             }
@@ -92,11 +98,6 @@ public class InventoryManagementService {
 
     public Optional<InventoryManagementModel> findById(UUID id) {
         return repository.findById(id);
-    }
-
-    @Transactional
-    public void delete(InventoryManagementModel model) {
-        repository.delete(model);
     }
 
 }

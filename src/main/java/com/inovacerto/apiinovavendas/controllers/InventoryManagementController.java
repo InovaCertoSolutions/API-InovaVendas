@@ -1,11 +1,8 @@
 package com.inovacerto.apiinovavendas.controllers;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -13,7 +10,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,16 +56,6 @@ public class InventoryManagementController {
         }
         
         return ResponseEntity.status(HttpStatus.CREATED).body(this.service.save(request));
-    }
-
-    @DeleteMapping("/{uuid}")
-    public ResponseEntity<Object> remove(@PathVariable(value = "uuid") UUID id) {
-        Optional<InventoryManagementModel> search = this.service.findById(id);
-        if (!search.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Movimentação de Estoque não encontrada");
-        }
-        service.delete(search.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Removido com sucesso!");
     }
 
 }

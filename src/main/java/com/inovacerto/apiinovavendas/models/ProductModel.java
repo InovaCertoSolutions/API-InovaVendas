@@ -50,9 +50,6 @@ public class ProductModel implements Serializable {
     private Float mediumCost;
 
     @Column
-    private Float suggestedSalePrice;
-
-    @Column
     private Integer stockQuantity;
 
 }
