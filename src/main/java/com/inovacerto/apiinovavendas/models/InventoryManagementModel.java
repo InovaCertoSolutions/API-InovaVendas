@@ -18,41 +18,33 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "products")
+@Table(name = "inventory_managements")
 @Getter @Setter @NoArgsConstructor
-public class ProductModel implements Serializable {
+public class InventoryManagementModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID uuid;
 
-    @Column(length = 500, nullable = false)
-    private String name;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private ProductModel product;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_uuid")
-    private ProductCategoryModel category;
+    @JoinColumn(name = "warehouse_uuid", nullable = true)
+    private WarehouseModel warehouse;
+
+    // ENTRADA, SAIDA, VENDA, RESERVA
+    @Column(length = 20, nullable = false)
+    private String managementType;
 
     @Column
-    private Float salePrice;
+    private Integer quantity;
 
     @Column
-    private Float cost;
+    private Float unitCost;
 
     @Column(nullable=false)
     private LocalDateTime creationDate;
-
-    @Column(nullable=true)
-    private LocalDateTime lastUpdateDate;
-    
-    @Column
-    private Float mediumCost;
-
-    @Column
-    private Float suggestedSalePrice;
-
-    @Column
-    private Integer stockQuantity;
 
 }
